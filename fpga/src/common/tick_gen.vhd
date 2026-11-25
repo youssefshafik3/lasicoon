@@ -1,6 +1,5 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
-USE IEEE.numeric_std.ALL;
 
 ENTITY tick_gen IS
 GENERIC (CLK_FREQ : INTEGER := WORK.game_pkg.CLK_FREQ);
@@ -16,7 +15,7 @@ SIGNAL CLK_PER_S_COUNTER : INTEGER RANGE 0 TO CLK_PER_S - 1 := 0;
 BEGIN
 PROCESS(clk)
 BEGIN
-IF clk'EVENT AND clk = '1' THEN
+IF rising_edge(clk) THEN
 tick_1ms <= '0';
 tick_1s <= '0';
 IF rst_n = '0' THEN
