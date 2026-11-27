@@ -159,7 +159,29 @@ begin
         assert buzzer = '0'
             report "Buzzer should return to 0 after pattern finishes"
             severity failure;
+        
 
+        -- 6. Simultaneous pulses on the exact same clock edge (hit_p + miss_p)
+        --    hit_p must win and load step_idx = 1 (not step_idx = 0)
+        wait until rising_edge(clk);
+        miss_p <= '1';
+        hit_p  <= '1';
+        wait until rising_edge(clk);
+        miss_p <= '0';
+        hit_p  <= '0';
+        wait for 20 us;
+
+        -- 7. Lower-priority miss_p during active PAT_HIT must be ignored
+        prev_toggles := toggle_cnt;
+        wait until rising_edge(clk);
+        miss_p <= '1';
+        wait until rising_edge(clk);
+        miss_p <= '0';
+        wait for 20 us;
+        assert toggle_cnt > prev_toggles
+            report "Buzzer stopped unexpectedly when lower-priority miss_p arrived"
+            severity failure;
+            
         done <= true;
         wait;
     end process;
