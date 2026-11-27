@@ -407,7 +407,9 @@ begin
         );
 
     -- Drive GPIO outputs (unused GPIO lines left high-Z)
-    GPIO <= (others => 'Z');
+    GPIO(1 downto 0)   <= (others => 'Z');
+    GPIO(14 downto 7)  <= (others => 'Z');
+    GPIO(35 downto 20) <= (others => 'Z');
     GPIO(PIN_IR_OUT)      <= ir_out;
     GPIO(PIN_LASER_SIGHT) <= laser_sight;
     GPIO(PIN_PAN_PWM)     <= pan_pwm;
