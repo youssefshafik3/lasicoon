@@ -40,7 +40,7 @@ architecture structural of top_level is
     signal start_p       : std_logic;
     signal reset_score_p : std_logic;
     signal fire_p        : std_logic;
-    signal rx_sync       : std_logic_vector(N_TARGETS - 1 downto 0);
+    signal rx_sync       : std_logic_vector(4 downto 0);
 
     -- Arduino UART & sensor signals
     signal uart_data     : std_logic_vector(7 downto 0);
@@ -72,10 +72,10 @@ architecture structural of top_level is
     -- Turret & targets
     signal pan_pwm     : std_logic;
     signal tilt_pwm    : std_logic;
-    signal active      : std_logic_vector(N_TARGETS - 1 downto 0);
-    signal up_ok       : std_logic_vector(N_TARGETS - 1 downto 0);
-    signal armed       : std_logic_vector(N_TARGETS - 1 downto 0);
-    signal target_pwm  : std_logic_vector(N_TARGETS - 1 downto 0);
+    signal active      : std_logic_vector(4 downto 0);
+    signal up_ok       : std_logic_vector(4 downto 0);
+    signal armed       : std_logic_vector(4 downto 0);
+    signal target_pwm  : std_logic_vector(4 downto 0);
     signal timeout_p   : std_logic;
 
     -- Game FSM, streak & scoring
@@ -177,7 +177,7 @@ begin
             press_p   => fire_p
         );
 
-    gen_rx_sync : for i in 0 to N_TARGETS - 1 generate
+    gen_rx_sync : for i in 0 to 4 generate
         u_sync_rx : entity work.input_sync_debounce
             generic map (DEBOUNCE_MS => 0, ACTIVE_LOW => false)
             port map (
@@ -299,7 +299,7 @@ begin
             timeout_p => timeout_p
         );
 
-    gen_target_servos : for i in 0 to N_TARGETS - 1 generate
+    gen_target_servos : for i in 0 to 4 generate
         u_target_srv : entity work.target_servo_ctrl
             port map (
                 clk       => MAX10_CLK1_50,
@@ -414,7 +414,7 @@ begin
     GPIO(PIN_TILT_PWM)    <= tilt_pwm;
     GPIO(PIN_BUZZER)      <= buzzer_sig;
 
-    gen_target_gpio : for i in 0 to N_TARGETS - 1 generate
+    gen_target_gpio : for i in 0 to 4 generate
         GPIO(15 + i) <= target_pwm(i);
     end generate;
 
